@@ -1,0 +1,74 @@
+
+<html>
+	<head>
+	<link rel="stylesheet" type="text/css" href="myCss.css">
+	<script src="myJs.js"></script>
+	<script>
+	document.title="Fresher '17 chat";
+	if(document.cookie==""){
+		var name=prompt("Please enter your name", "");
+		if(name=="null"||name==""){window.location="error.html";}
+		name=name.charAt(0).toUpperCase()+name.slice(1);
+	}
+	name=name.charAt(0).toUpperCase()+name.slice(1);
+	
+	if (!("Notification" in window)) {
+		alert("This browser does not support desktop notification");
+	  }
+
+	  else if (Notification.permission === "granted") {
+		//var notification = new Notification("Now you will get notification like this");
+	  }
+
+	  // Otherwise, we need to ask the user for permission
+	  else if (Notification.permission == "denied"||Notification.permission == "default") {
+		Notification.requestPermission().then(function (permission) {
+		  // If the user accepts, let's create a notification
+		  if (permission === "granted") {
+			  var notification = new Notification("Now you will get notification like this");
+		  }
+		});
+	  }
+	  
+	  var xhttp = new XMLHttpRequest();
+	  	xhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+		 	var doc=document.getElementById("chatDisplay");
+			 doc.innerHTML = this.responseText;
+			}
+		  };
+		  xhttp.open("GET", "chatController.php?action=checkMessage", true);
+		  xhttp.send();
+		  
+	var timeInterval=setInterval(function(){ 
+		var xhttp = new XMLHttpRequest();
+	  	xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+			 	var doc=document.getElementById("chatDisplay");
+			 	//console.log(doc.innerHTML);
+			 	//console.log(this.responseText);
+			 	if(doc.innerHTML!=this.responseText){
+			 		doc.innerHTML = this.responseText;
+			 		var doc=document.getElementById("chatDisplay");
+					doc.scrollTop=doc.scrollHeight+200;
+			 		//var myNotification = new Notification("Hi "+name+", new message arrived!");
+					var myNotification = new Notification("Php Chat",{body: 'Hi '+name+', You got new message',icon: 'icon.png'});
+			 	}
+			 }
+		  };
+		  xhttp.open("GET", "chatController.php?action=checkMessage", true);
+		  xhttp.send();
+	 }, 1000);
+	 
+	 </script>
+	</head>
+	<body>
+	<h2>Freshers '17 group chat</h2>
+		<div class="chatBox" id="chatDisplay">
+		</div>
+		<form onSubmit="sendMessage()" action="javascript:void(0);">
+			<input type="text" placeholder="Type here..." class="inputBox" name=sendMessage"" id="inputBox"> 
+			<input type="button" id="sendButton" onClick="sendMessage()" value="Send">
+</form>
+	</body>
+</html>
